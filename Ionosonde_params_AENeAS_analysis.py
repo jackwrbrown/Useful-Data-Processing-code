@@ -114,3 +114,53 @@ background_mean_foF2 = np.array(background_mean_foF2)
 background_mean_hmF2 = np.array(background_mean_hmF2)
 background_foF2_members = np.array(background_foF2_members)
 background_hmF2_members = np.array(background_hmF2_members)
+
+
+
+##########################################################################################################
+
+# Additional plotting if you want
+
+# Plotting
+plt.figure(figsize=(12, 6))
+
+# Plot analysis ensemble members
+for member_idx in range(32):
+    plt.plot(valid_times, analysis_foF2_members[:, member_idx], color='red', alpha=0.1, linewidth=1)
+
+# Plot background and analysis means
+plt.plot(valid_times, background_mean_foF2, color = 'blue', label='Background Mean foF2', linewidth=2)
+plt.plot(valid_times, analysis_mean_foF2, color = 'red', label='Analysis Mean foF2', linewidth=2)
+
+# Labels and formatting
+plt.title(f"foF2 at Grid Point [lat={lon_index}, lon={lat_index}] on 2025-02-08")
+plt.xlabel("Time (UTC)")
+plt.ylabel("foF2 [MHz]")
+plt.grid(True)
+plt.legend()
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# Plotting hmF2
+plt.figure(figsize=(12, 6))
+
+# Plot analysis ensemble members (hmF2)
+for member_idx in range(32):
+    plt.plot(valid_times, analysis_hmF2_members[:, member_idx], color='red', alpha=0.1, linewidth=1)
+
+# Plot background and analysis means (hmF2)
+plt.plot(valid_times, background_mean_hmF2, color='blue', label='Background Mean hmF2', linewidth=2)
+plt.plot(valid_times, analysis_mean_hmF2, color='red', label='Analysis Mean hmF2', linewidth=2)
+
+# Labels and formatting
+plt.title(f"hmF2 at Grid Point [lat={lat_index}, lon={lon_index}] on 2025-02-08")
+plt.xlabel("Time (UTC)")
+plt.ylabel("hmF2 [km]")
+plt.grid(True)
+plt.legend()
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+##########################################################################################################
