@@ -1,13 +1,20 @@
+===================================================================================================================================================================
+# This is a basic code to get the foF2 and hmF2 model output from AENeAS at a given location
+# Only looks at one station
+===================================================================================================================================================================
+
+# Import modules
 import os
 import h5py
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-# Folder containing the output files
+# Folder containing the AENeAS output files
 folder_path = "/rds/projects/t/themendr-j-brown/aeneas/2wk_spinup_20250208_DT_GNSS_data/factory_setting_run/"
 
 # Function to find the peak electron density (NmF2) and corresponding altitude (hmF2) very basic could get a better one
+# Sets a min altitude where the F2 peak has to be above
 def findPeakElectronDensity(Ne, alt, hmF2_min=200.0):
     if Ne.shape != alt.shape:
         raise ValueError(f"Ne shape {Ne.shape} doesn't match alt shape {alt.shape} in findPeakElectronDensity")
@@ -28,6 +35,8 @@ def extract_foF2_all_members(file_path, lon_index, lat_index, group='analysis', 
 
     with h5py.File(file_path, "r") as f:
         for member_idx in range(32):
+            # Might need changing with v2
+            # Gets the individual ensemble member electron densities and geopotential heights 
             Ne_path = f"{group}/member{member_idx}/grids/NE"
             ZG_path = f"altitudes/member{member_idx}/ZG"
 
