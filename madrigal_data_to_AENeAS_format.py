@@ -72,7 +72,7 @@ gnss_dataframe_elv_filtered = gnss_dataframe_elv_filtered.copy()
 # Reset the index to make sure row numbers line up
 gnss_dataframe_elv_filtered.reset_index(drop=True, inplace=True)
 
-# Rename columns to make them more readable (optional step)
+# Rename columns to make them more readable for datetime
 gnss_dataframe_elv_filtered = gnss_dataframe_elv_filtered.rename(columns={'year': 'Year', 'month': 'Month', 'day': 'Day', 'hour': 'Hour', 'minute': 'Minute', 'second': 'Second'})
 
 gnss_dataframe_elv_filtered['time'] = pd.to_datetime(gnss_dataframe_elv_filtered[['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second']])
@@ -204,9 +204,13 @@ for station in station_names:
                 
                 # Calculate standard deviation of TEC, handling case for a single data point
                 if len(window_data) > 1:
-                    std_los_tec = window_data['los_tec'].std()
+                    std_los_tec = window_data['los_tec'].std() * 10 # Multiply by 10 to give a reasonable Stec error
+                                                                    # The 10 factor comes from comparing to example AENeAS data
                 else:
-                    std_los_tec = window_data['dlos_tec'].iloc[0]  # Use dlos_tec from the single row
+                    std_los_tec = window_data['dlos_tec'].iloc[0] * 10 # Use dlos_tec from the single row
+
+                # Enforce minimum std and add 1.5 TECU in quadrature
+                std_los_tec = np.sqrt(std_los_tec**2 + 1.5**2)
 
                 # Average satellite position over the window
                 avg_x_sat = window_data['X_sat'].mean()
@@ -249,7 +253,7 @@ for col in binned_df.columns:
         logger.info(f"Rows with NaN values in '{col}':\n{binned_df[binned_df[col].isna()]}")
 
 # Define the new directory path
-output_dir = '20170604_Madrigal_GNSS_AENeAS_formatted_data'
+output_dir = # Change the output_dir depending on what you want
 
 # Ensure the directory exists (create it if it doesn't)
 if not os.path.exists(output_dir):
