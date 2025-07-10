@@ -1,5 +1,4 @@
 # Import modules
-
 import sys
 import os
 import h5py
@@ -7,10 +6,12 @@ import pandas as pd
 from datetime import datetime, timedelta
 import numpy as np
 
+# You need to have INSTALLED AENeAS before using this code
+
 # Add AENeAS tools to the path
 # These will be used to process and format the output data
 # MIGHT NEED CHANGING WITH 2.0
-sys.path.append('/rds/projects/t/themendr-j-brown/aeneas_2.0/aeneas')
+sys.path.append('/rds/projects/t/themendr-j-brown/aeneas_2.0/aeneas') # change to your path where AENeAS tools etc. are stored
 from aeneas.denGrid import aeneas2dg, dengrid
 
 # ----------------------------
