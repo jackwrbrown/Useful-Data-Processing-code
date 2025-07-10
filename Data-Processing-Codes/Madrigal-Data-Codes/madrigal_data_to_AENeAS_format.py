@@ -1,3 +1,7 @@
+# This script is used in conjunction with the madrigal_to_AENeAS_format.sh job script and can be run on BlueBEAR or a Linux HPC
+# It formats Madrigal GNSS TEC data into a format that can be assimilated into AENeAS
+
+# import modules
 import argparse
 import os
 import numpy as np
@@ -62,6 +66,11 @@ columns_needed = ['year', 'month', 'day', 'hour', 'minute', 'second', 'gps_site'
 
 gnss_dataframe_filtered = df_filtered[columns_needed]
 
+# We apply an elevation constraint as data from elevations below 15 deg isn't as reliable and can be affected by multipath effects etc.
+# It's a standard procedure you can go here for a reference:
+# Henning, W., 2011. User guidelines for single base real time GNSS positioning. 
+# Available at: https://www.ngs.noaa.gov/PUBS\_LIB/UserGuidelinesForSingleBaseRealTimeGNSSPositioningv.3.1APR2014-1.pdf
+
 # Now, apply the elevation constraint after loading all chunks
 logger.info("Applying elevation constraint (elevation >= 15).")
 gnss_dataframe_elv_filtered = gnss_dataframe_filtered[gnss_dataframe_filtered['elm'] >= 15]
@@ -84,16 +93,20 @@ logger.info(f"Checking for NaNs in the initial DataFrame: {gnss_dataframe_elv_fi
 # Perform coordinate conversion (ECEF)
 logger.info(f'Moving to coord conversion')
 
-# Add AENeAS path
+# Add AENeAS path, change to where AENeAS has been downloaded
 sys.path.append('/rds/projects/t/themendr-j-brown/aeneas/aeneas')
 
-# Now import the class
+# Now import the class this is from AENeAS files so you need to download AENeAS first
 from coordinates import Coords
 
 # Define sat range
 SATELLITE_RANGE_KM = 20200  # Example satellite range in km
 
+# AENeAS needs data in ECEF coords but the Madrigal TEC comes in Range, Azimuth, elevation (REA)
+# Need to apply a coord transform first
+
 # Function to convert receiver and satellite coordinates to ECEF
+# Function uses AENeAS built in functions to convert coordinates, found in coordinates.py 
 def convert_to_ecef(row):
     # Receiver coordinates in ECEF
     receiver_coords = Coords([row["gdlonr"], row["gdlatr"], 0], 'GEODET')
@@ -106,6 +119,8 @@ def convert_to_ecef(row):
     satellite_ecef_vector = np.stack(satellite_ecef_vector, axis=-1).flatten()  
     
     # Compute absolute satellite ECEF position
+    # You have to add the receiver ecef as well as the reatoEcefDir function traces the beam between the receiver and the satellite
+    # So it is in the receivers reference frame, by adding the receiver ECEF you move the satellite ECEF coords into the Earth centred frame (ECEF)
     satellite_ecef = receiver_ecef + satellite_ecef_vector  # Shift to Earth's center
     
     return np.hstack([receiver_ecef, satellite_ecef])  # Return both as 1D array
