@@ -83,7 +83,15 @@ electron_densities = dengrid(bck_den_data, alon_data, alat_data, aalt_data, name
 
 # Here's some funky functions you can use once you have a dengrid object set up, these are all in the AENeAS .py files like denGrid.py etc, see the documentation for each one
 
+# Plot TEC maps
 electron_densities.plot_map('tec', res=0.5, title='tec')
+
+# Get a number of electron densities at specific (lat, lon, [list of altitudes]) the order determines the order of interpolation
+electron_densities.getColumn(-1.5, 51.7, [100, 200], order = 1)
+
+# Plot the vertical profile at a lat lon easily
+alt = np.arange(100,800,1) # Make a list of altitudes
+electron_densities.plot_profile(-1.5,51.7,alt)
 
 # Basic function to get an estimate of fof2 and hmf2, this is quite bad there's better ones but it's a basic starter
 def summarize_ne_grid(ne_data, lon, lat, alt, time, label="analysis"):
