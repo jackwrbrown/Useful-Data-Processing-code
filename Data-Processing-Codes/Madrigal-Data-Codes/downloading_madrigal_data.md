@@ -12,8 +12,7 @@ http://millstonehill.haystack.mit.edu/list
 * pip install madrigalWeb
 
 ## Get the GNSS data for given dates
-* python3 globalDownload.py --url="http://cedar.openmadrigal.org" --user_fullname="Jack Brown" --user_email="jxb1605@student.bham.ac.uk" --outputDir="." --user_affiliation="University of Birmingham" --format="hdf5" --inst=8000 --kindat=3505 --verbose --startDate
-=05/09/2024 --endDate=05/13/2024
+* python3 globalDownload.py --url="http://cedar.openmadrigal.org" --user_fullname="Jack Brown" --user_email="jxb1605@student.bham.ac.uk" --outputDir="." --user_affiliation="University of Birmingham" --format="hdf5" --inst=8000 --kindat=3505 --verbose --startDate=05/09/2024 --endDate=05/13/2024
 
 ## Get out of screen
 * CTRL + A    d
